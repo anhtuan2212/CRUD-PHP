@@ -14,7 +14,7 @@ class SinhVienController extends Controller
     public function index()
     {
         $sinhvien = SinhVien::paginate(5);
-        return view('index', compact('sinhvien'))->with('i',(request()->input('page',1)-1) *5);
+        return view('layout.view.index', compact('sinhvien'));
     }
 
     /**
@@ -23,8 +23,9 @@ class SinhVienController extends Controller
      */
     public function create()
     {
-        return view('create');
+        return view('layout.view.create');
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -34,7 +35,8 @@ class SinhVienController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        SinhVien::create($request->all());
+        return redirect()-> route('home')->with('message', 'Thêm Thành Công !');
     }
 
     /**
@@ -56,7 +58,8 @@ class SinhVienController extends Controller
      */
     public function edit($id)
     {
-        //
+       $sinhvien= SinhVien::find($id);
+        return view('layout.view.edit', compact('sinhvien'));
     }
 
     /**
@@ -66,9 +69,20 @@ class SinhVienController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
-        //
+        // dd($id);
+        $data = [
+            'HoTen' => $request->HoTen,
+            'MaSV'=> $request->MaSV,
+            'NgaySinh' => $request->NgaySinh,
+            'GioiTinh'=> $request->GioiTinh,
+            'DiaChi' => $request->DiaChi,
+            'SoDT'=>$request->SoDT
+        ];
+        SinhVien::where('id',$id)->update($data);
+        
+        return redirect()-> route('home')->with('message', 'Cập Nhật Thành Công !');
     }
 
     /**
@@ -79,6 +93,8 @@ class SinhVienController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $sinhvien =  SinhVien::find($id);
+        $sinhvien->delete();
+        return redirect()-> route('home')->with('message', 'Xóa Thành Công !');
     }
 }
